@@ -25,7 +25,7 @@ printf "Find the log at %s\n" "$logfile"
 }
 measure_rss &>/dev/null &
 # launch worker
-python ./benchmark.py $CLUSTER --job_name=worker --task_index=0 $@ 2>&1 | tee bench-worker.log
+python ./benchmark.py $CLUSTER --ev_storage=pmem_memkind --job_name=worker --task_index=0 $@ 2>&1 | tee bench-worker.log
 # clean procs
 ps aux | grep benchmark.py | awk '{print $2}' | xargs kill -9
 wait

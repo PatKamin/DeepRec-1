@@ -9,6 +9,8 @@ from tensorflow.python.client import timeline
 import json
 
 from tensorflow.python.ops import partitioned_variables
+from tensorflow.core.framework.embedding import config_pb2
+from tensorflow.python.ops import variables
 
 # Set to INFO for tracking training, default is WARN. ERROR for least messages
 tf.logging.set_verbosity(tf.logging.INFO)
@@ -154,10 +156,12 @@ def build_feature_cols(train_file_path, test_file_path):
             deep_columns.append(
                 tf.feature_column.indicator_column(categorical_column))
         elif column_name in CATEGORICAL_COLUMNS:
-            categorical_column = tf.feature_column.categorical_column_with_hash_bucket(
+            categorical_column = tf.feature_column.categorical_column_with_embedding(
                 column_name,
-                hash_bucket_size=HASH_BUCKET_SIZES[column_name],
-                dtype=tf.string)
+                dtype=tf.string,
+                ev_option=tf.EmbeddingVariableOption(
+                    storage_option=variables.StorageOption(
+                        storage_type=config_pb2.StorageType.PMEM_MEMKIND)))
             wide_columns.append(categorical_column)
 
             deep_columns.append(
@@ -659,7 +663,7 @@ if __name__ == "__main__":
                     'index': task_index,
                     'is_chief': is_chief
                 },
-                     server=server)
+                    server=server)
         else:
             print("Task type or index error.")
             sys.exit()
