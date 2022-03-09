@@ -122,6 +122,8 @@ Allocator* AllocatorFactoryRegistry::GetPMEMAllocator() {
     }
   }
 
+  LOG(INFO) << "PMEM ALLOCATOR!!!";
+
   if (best_entry) {
     if (!best_entry->allocator) {
       best_entry->allocator.reset(best_entry->factory->CreatePMEMAllocator());

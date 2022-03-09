@@ -152,6 +152,7 @@ class EmbeddingVar : public ResourceBase {
         return errors::InvalidArgument(name_, ", No registered EV AllocatorFactory.");
       }
     } else if (embedding::StorageType::PMEM_MEMKIND == emb_config_.get_storage_type()) {
+      LOG(INFO) << "pmem_allocator";
       alloc_ = pmem_allocator();
       if (!alloc_) {
         return errors::InvalidArgument(name_, ", No registered PMEM_MEMKIND AllocatorFactory.");

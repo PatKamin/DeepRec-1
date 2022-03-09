@@ -104,7 +104,7 @@ class PMEMAllocator : public Allocator {
               << std::chrono::duration_cast<std::chrono::microseconds>(end -
                                                                        begin)
                      .count()
-              << "[µs]" << std::endl;
+              << "[µs]";
 
     return p;
   }

@@ -238,6 +238,8 @@ StatusOr<std::unique_ptr<PyLocalBuffer>> PyLocalBuffer::FromHostBuffer(
       int64 size = ShapeUtil::ByteSizeOf(shape);
       void* ptr = client->host_memory_allocator()->AllocateRaw(
           tensorflow::Allocator::kAllocatorAlignment, size);
+      LOG(INFO) << "DEALLOCATE";
+      printf("DEALLOCATE PRINTF");
       staging_buffer = std::shared_ptr<void>(ptr, [client](void* ptr) {
         client->host_memory_allocator()->DeallocateRaw(ptr);
       });
