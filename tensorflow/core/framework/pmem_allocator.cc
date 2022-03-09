@@ -14,6 +14,7 @@ limitations under the License.
 ==============================================================================*/
 
 #include <atomic>
+#include <chrono>
 
 #include "memkind.h"
 #include "tensorflow/core/framework/allocator.h"
@@ -67,6 +68,8 @@ class PMEMAllocator : public Allocator {
   string Name() override { return "pmem"; }
 
   void* AllocateRaw(size_t alignment, size_t num_bytes) override {
+    auto begin = std::chrono::steady_clock::now();
+
     if (num_bytes > LargeAllocationWarningBytes() &&
         single_allocation_warning_count_ < kMaxSingleAllocationWarnings) {
       ++single_allocation_warning_count_;
@@ -95,6 +98,14 @@ class PMEMAllocator : public Allocator {
                      << "% of system memory";
       }
     }
+
+    auto end = std::chrono::steady_clock::now();
+    LOG(INFO) << "Time difference = "
+              << std::chrono::duration_cast<std::chrono::microseconds>(end -
+                                                                       begin)
+                     .count()
+              << "[µs]" << std::endl;
+
     return p;
   }
 
